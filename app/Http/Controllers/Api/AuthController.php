@@ -12,11 +12,13 @@ use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Auth\AuthenticationException;
 use Exception;
-use Symfony\Component\HttpFoundation\Response; // Importing Response
+use Symfony\Component\HttpFoundation\Response; 
+use App\Http\Requests\RequestResetPasswordRequest;
+use App\Http\Requests\VerifyOtpRequest;
 
 class AuthController extends Controller
 {
-    use ApiResponse; // 📌 Utilisation du Trait
+    use ApiResponse; 
 
     private AuthServiceInterface $authService;
 
@@ -25,9 +27,6 @@ class AuthController extends Controller
         $this->authService = $authService;
     }
 
-    /**
-     * Inscription d'un utilisateur
-     */
     public function register(RegisterRequest $request)
     {
         try {
@@ -40,9 +39,6 @@ class AuthController extends Controller
         }
     }
 
-    /**
-     * Connexion d'un utilisateur
-     */
     public function login(AuthResquest $request)
     {
 
@@ -62,5 +58,36 @@ class AuthController extends Controller
             return $this->error('Une erreur interne est survenue', Response::HTTP_INTERNAL_SERVER_ERROR, $e->getMessage());
         }
     }
+
+    public function requestResetPassword(RequestResetPasswordRequest $request)
+    {
+        try {
+            $this->authService->requestResetPassword($request->identifier);
+            return $this->success([], 'OTP envoyé avec succès.', Response::HTTP_OK);
+        } catch (NotFoundHttpException $e) {
+            return $this->error('Utilisateur non trouvé', Response::HTTP_NOT_FOUND);
+        } catch (ValidationException $e) {
+            return $this->error('Échec de validation des données', Response::HTTP_UNPROCESSABLE_ENTITY, $e->errors());
+        } catch (Exception $e) {
+            return $this->error('Une erreur interne est survenue', Response::HTTP_INTERNAL_SERVER_ERROR, $e->getMessage());
+        }
+    }
+
+    public function resetPassword(VerifyOtpRequest $request)
+    {
+        try {
+            $this->authService->resetPassword($request->identifier, $request->otp, $request->new_password);
+            return $this->success([], 'Mot de passe mis à jour avec succès.', Response::HTTP_OK);
+        } catch (AuthenticationException $e) {
+            return $this->error('OTP invalide ou expiré', Response::HTTP_UNAUTHORIZED);
+        } catch (NotFoundHttpException $e) {
+            return $this->error('Utilisateur non trouvé', Response::HTTP_NOT_FOUND);
+        } catch (ValidationException $e) {
+            return $this->error('Échec de validation des données', Response::HTTP_UNPROCESSABLE_ENTITY, $e->errors());
+        } catch (Exception $e) {
+            return $this->error('Une erreur interne est survenue', Response::HTTP_INTERNAL_SERVER_ERROR, $e->getMessage());
+        }
+    }
+
 }
 

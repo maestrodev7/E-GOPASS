@@ -12,6 +12,9 @@ Route::get('/user', function (Request $request) {
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+Route::post('request-reset-password', [AuthController::class, 'requestResetPassword']);
+Route::post('reset-password', [AuthController::class, 'resetPassword']);
+
 Route::middleware(['auth:sanctum', CheckIfSupperAdmin::class])->get('/admin-only', function () {
     return response()->json(['message' => 'You are an admin and have access to this route.']);
 });

@@ -6,6 +6,11 @@ use App\Domain\Repositories\SuperAdminRepositoryInterface;
 use App\Domain\Entities\SuperAdministrateur;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use Illuminate\Support\Facades\Cache;
+use Twilio\Rest\Client;
+use Exception;
+use App\Mail\SendOtpMail;
 use Illuminate\Http\Response;
 use App\Traits\ApiResponse;
 
@@ -49,7 +54,7 @@ class AuthService implements AuthServiceInterface
         }
 
         $otp = rand(100000, 999999);
-        Cache::put("otp_{$identifier}", $otp, now()->addMinutes(5));
+        Cache::put("otp_{$identifier}", (int)$otp, now()->addMinutes(5));
 
         if (filter_var($identifier, FILTER_VALIDATE_EMAIL)) {
             Mail::to($identifier)->send(new SendOtpMail($otp));
@@ -58,8 +63,10 @@ class AuthService implements AuthServiceInterface
         }
     }
 
-    public function verifyOtp(string $identifier, string $otp): bool
+    public function verifyOtp(string $identifier, int $otp): bool
     {
+        
+
         if (Cache::get("otp_{$identifier}") === (int)$otp) {
             Cache::forget("otp_{$identifier}");
             return true;
@@ -67,15 +74,16 @@ class AuthService implements AuthServiceInterface
         throw new Exception('Code OTP invalide ou expiré', Response::HTTP_UNAUTHORIZED);
     }
 
-    public function resetPassword(string $identifier, string $otp, string $newPassword): void
+    public function resetPassword(string $identifier, int $otp, string $newPassword): void
     {
-        if (!$this->verifyOtp($identifier, $otp)) {
-            throw new Exception('Code OTP invalide', Response::HTTP_UNAUTHORIZED);
+        $user = $this->repository->findByEmailOrPhone($identifier);
+
+        if (!$user || !is_object($user)) {
+            throw new Exception('Utilisateur non trouvé ou mauvais format', Response::HTTP_NOT_FOUND);
         }
 
-        $user = $this->repository->findByEmailOrPhone($identifier);
-        if (!$user) {
-            throw new Exception('Utilisateur non trouvé', Response::HTTP_NOT_FOUND);
+        if (!$this->verifyOtp($identifier, $otp)) {
+            throw new Exception('Code OTP invalide', Response::HTTP_UNAUTHORIZED);
         }
 
         $user->password = Hash::make($newPassword);

@@ -28,11 +28,20 @@ class SuperAdminRepository implements SuperAdminRepositoryInterface
     
     public function findByEmailOrPhone(string $identifier): ?SuperAdministrateur
     {
-        return SuperAdministrateur::where('email', $identifier)->orWhere('telephone', $identifier)->first();
+        $model = SuperAdminModel::where('email', $identifier)
+            ->orWhere('telephone', $identifier)
+            ->first();
+
+        return $model ? SuperAdministrateurMapper::toEntity($model) : null;
     }
 
     public function save(SuperAdministrateur $superAdmin): void
     {
-        $superAdmin->save();
+        $data = SuperAdministrateurMapper::toModel($superAdmin);
+
+    // Convert the array back to a SuperAdminModel instance
+    $model = new SuperAdminModel($data);
+    $model->update($data);
+
     }
 }
