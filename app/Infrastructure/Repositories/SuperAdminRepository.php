@@ -39,9 +39,8 @@ class SuperAdminRepository implements SuperAdminRepositoryInterface
     {
         $data = SuperAdministrateurMapper::toModel($superAdmin);
 
-    // Convert the array back to a SuperAdminModel instance
-    $model = new SuperAdminModel($data);
-    $model->update($data);
+        $model = new SuperAdminModel($data);
+        $model->update($data);
 
     }
 }

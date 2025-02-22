@@ -30,12 +30,10 @@ class AuthService implements AuthServiceInterface
         $user = $this->repository->findByEmail($credentials['email']);
 
         if (!$user) {
-            // User not found
-            return ['error' => 'Utilisateur non trouvé', 'status' => Response::HTTP_NOT_FOUND];
+            return ['error' => 'Supper admin non trouvé', 'status' => Response::HTTP_NOT_FOUND];
         }
 
         if (!Hash::check($credentials['password'], $user->password)) {
-            // Invalid credentials
             return ['error' => 'Échec de l’authentification, identifiants incorrects', 'status' => Response::HTTP_BAD_REQUEST];
         }
 
@@ -50,7 +48,7 @@ class AuthService implements AuthServiceInterface
         $user = $this->repository->findByEmailOrPhone($identifier);
 
         if (!$user) {
-            throw new Exception('Utilisateur non trouvé', Response::HTTP_NOT_FOUND);
+            throw new Exception('Supper admin  non trouvé', Response::HTTP_NOT_FOUND);
         }
 
         $otp = rand(100000, 999999);
