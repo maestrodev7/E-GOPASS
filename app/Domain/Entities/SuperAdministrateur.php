@@ -13,6 +13,7 @@ class SuperAdministrateur
         public string $email,
         public string $fonction,
         public string $poste_de_travail,
+        public ?string $nbr_egopass_desactiver = null,
         public string $password,
         public ?string $created_at = null,
         public ?string $updated_at = null

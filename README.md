@@ -1,6 +1,3 @@
-Bien sûr ! Voici comment vous pouvez compléter la section du `README` pour inclure les informations de configuration de Twilio sans divulguer les clés ou informations sensibles. Je vais ajouter une section spécifique pour Twilio en expliquant ce qu'il faut configurer dans le fichier `.env` :
-
----
 
 ## 🚀 Getting Started
 
@@ -21,8 +18,8 @@ Before you begin, ensure you have the following installed:
    Start by cloning this repository to your local machine:
 
    ```bash
-   git clone https://github.com/votre-utilisateur/votre-repo.git
-   cd votre-repo
+   git clone https://github.com/maestrodev7/E-GOPASS.git
+   cd E-GOPASS
    ```
 
 2. **Install PHP dependencies**  
@@ -79,20 +76,8 @@ Before you begin, ensure you have the following installed:
    php artisan migrate
    ```
 
-6. **Install frontend dependencies (optional)**  
-   If your project uses frontend assets (e.g., JavaScript, CSS), install the dependencies using npm or Yarn:
 
-   ```bash
-   npm install
-   ```
-
-   Compile the assets:
-
-   ```bash
-   npm run dev
-   ```
-
-7. **Run the application**  
+6. **Run the application**  
    Start the Laravel development server:
 
    ```bash

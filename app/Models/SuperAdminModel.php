@@ -14,7 +14,7 @@ class SuperAdminModel extends Model
 
     protected $fillable = [
         'nom', 'postnom', 'prenom', 'telephone', 'email', 
-        'fonction', 'poste_de_travail', 'password'
+        'fonction', 'poste_de_travail','nbr_egopass_desactiver', 'password'
     ];
 
     protected $hidden = ['password'];

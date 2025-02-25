@@ -18,6 +18,7 @@ class SuperAdministrateurMapper
             email: $model->email,
             fonction: $model->fonction,
             poste_de_travail: $model->poste_de_travail,
+            nbr_egopass_desactiver: $model->nbr_egopass_desactiver,
             password: $model->password,
             created_at: $model->created_at,
             updated_at: $model->updated_at
@@ -35,6 +36,7 @@ class SuperAdministrateurMapper
             'email' => $entity->email ?? '',
             'fonction' => $entity->fonction,
             'poste_de_travail' => $entity->poste_de_travail,
+            'nbr_egopass_desactiver' => $entity->nbr_egopass_desactiver,
             'password' => $entity->password,
             'created_at' => $entity->created_at,
             'updated_at' => $entity->updated_at,
